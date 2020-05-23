@@ -1,0 +1,4 @@
+{
+    "appService.defaultWebAppToDeploy": "/subscriptions/c07e2b00-1888-4c8f-9967-25164b8f71a3/resourceGroups/TileDesign/providers/Microsoft.Web/sites/BrokenTileMapDesign",
+    "appService.deploySubpath": ""
+}

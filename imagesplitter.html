@@ -1,0 +1,171 @@
+<html>
+    <head>
+        <script>
+            function downloadCanvasAsImage(canvas, name){
+                let downloadLink = document.createElement('a');
+                downloadLink.setAttribute('download', name + '.png');
+                canvas.toBlob(function(blob) {
+                    let url = URL.createObjectURL(blob);
+                    downloadLink.setAttribute('href', url);
+                    downloadLink.click();
+                });
+            }
+            function drawImage(img, canvas, x, y, w, h){
+                var ctx = canvas.getContext("2d");
+                ctx.clearRect(0, 0, canvas.width, canvas.height)
+                ctx.drawImage(img, x, y, w, h);
+            }
+            function split(){
+                let d = document.getElementById("imgSrcDirTxt").value;
+                let b = document.getElementById("chkBig").checked;
+                let f = document.getElementById("imgSrcFileTxt").value;
+                let output = document.getElementById("output");
+                output.value += "{id:'" + f + "-1', src:'"+d+"/" + f + "-1.png', subset:'"+f+"-1'},\n"
+                var imgSrc = document.getElementById("imgSrc");
+                split2(imgSrc, d, f, output);
+                let interval1 = setTimeout(split3, (9*300), imgSrc, d, f, output);
+                let interval2 = setTimeout(grow4, (9*300) + (30*300), imgSrc, d, f, output);
+                let interval3 = setTimeout(grow5, (9*300) + (30*300) + (9*300), imgSrc, d, f, output);
+            }
+            function doIt(c, s, x, y, w, h, f, d, output){
+                let canvas = document.getElementById("imageSplit-"+s+"-"+c);
+                drawImage(imgSrc, canvas, x, y, w, h);
+                let interval = setTimeout(downloadCanvasAsImage, (c*300), canvas, f + "-" + s + "-" + c);
+                output.value += "{id:'" + f + "-" + s + "-" + c + "', src:'"+d+"/" + f + "-" + s + "-" + c + ".png', subset:'"+f+"-" + s + "'},"
+            }
+            function grow4(imgSrc, d, f, output){
+                doIt(1, 4, 0, 0, 140, 140, f, d, output)
+                doIt(2, 4, -70, 0, 140, 140, f, d, output)
+                doIt(3, 4, 0, -70, 140, 140, f, d, output)
+                doIt(4, 4, -70, -70, 140, 140, f, d, output)
+                output.value += "\n"
+            }
+            function grow5(imgSrc, d, f, output){
+                doIt(1, 5, 0, 0, 210, 210, f, d, output)
+                doIt(2, 5, -70, 0, 210, 210, f, d, output)
+                doIt(3, 5, -140, 0, 210, 210, f, d, output)
+                doIt(4, 5, 0, -70, 210, 210, f, d, output)
+                doIt(5, 5, -70, -70, 210, 210, f, d, output)
+                doIt(6, 5, -140, -70, 210, 210, f, d, output)
+                doIt(7, 5, 0, -140, 210, 210, f, d, output)
+                doIt(8, 5, -70, -140, 210, 210, f, d, output)
+                doIt(9, 5, -140, -140, 210, 210, f, d, output)
+                output.value += "\n"
+            }
+            function split2(imgSrc, d, f, output){
+                doIt(1, 2, 35, 35, 70, 70, f, d, output)
+                doIt(2, 2, -35, 35, 70, 70, f, d, output)
+                doIt(3, 2, 35, -35, 70, 70, f, d, output)
+                doIt(4, 2, -35, -35, 70, 70, f, d, output)
+                output.value += "\n"
+            }
+            function split3(imgSrc, d, f, output){
+                let s = 70/2;
+                let o = 70/4;
+                doIt( 1, 3, ( 0*o), ( 0*o), s, s, f, d, output)
+                doIt( 2, 3, ( 3*o), ( 0*o), s, s, f, d, output)
+                doIt( 3, 3, (-1*o), ( 0*o), s, s, f, d, output)
+                doIt( 4, 3, ( 3*o), ( 1*o), s, s, f, d, output)
+                doIt( 5, 3, (-1*o), ( 1*o), s, s, f, d, output)
+                doIt( 6, 3, ( 3*o), ( 2*o), s, s, f, d, output)
+                doIt( 7, 3, (-1*o), ( 2*o), s, s, f, d, output)
+                doIt( 8, 3, ( 3*o), ( 3*o), s, s, f, d, output)
+                doIt( 9, 3, (-1*o), ( 3*o), s, s, f, d, output)
+                doIt(10, 3, ( 0*o), ( 3*o), s, s, f, d, output)
+                doIt(11, 3, ( 1*o), ( 3*o), s, s, f, d, output)
+                doIt(12, 3, ( 2*o), ( 3*o), s, s, f, d, output)
+                doIt(13, 3, ( 3*o), (-1*o), s, s, f, d, output)
+                doIt(14, 3, (-1*o), (-1*o), s, s, f, d, output)
+                doIt(15, 3, ( 0*o), (-1*o), s, s, f, d, output)
+                doIt(16, 3, ( 1*o), (-1*o), s, s, f, d, output)
+                doIt(17, 3, ( 2*o), (-1*o), s, s, f, d, output)
+                doIt(18, 3, ( 0*o), ( 1*o), s, s, f, d, output)
+                doIt(19, 3, ( 0*o), ( 2*o), s, s, f, d, output)
+                doIt(20, 3, ( 1*o), ( 0*o), s, s, f, d, output)
+                doIt(21, 3, ( 1*o), ( 1*o), s, s, f, d, output)
+                doIt(22, 3, ( 1*o), ( 2*o), s, s, f, d, output)
+                doIt(23, 3, ( 2*o), ( 0*o), s, s, f, d, output)
+                doIt(24, 3, ( 2*o), ( 1*o), s, s, f, d, output)
+                doIt(25, 3, ( 2*o), ( 2*o), s, s, f, d, output)
+                output.value += "\n"
+            }
+            function loadImage(){
+                let d = document.getElementById("imgSrcDirTxt").value;
+                let f = document.getElementById("imgSrcFileTxt").value;
+                document.getElementById("imgSrc").setAttribute("src", "tilesets/" + d + "/" + f + "-1.png");
+            }
+        </script>
+    </head>
+    <body>
+        <input id="imgSrcDirTxt" value="decorations/symbols" type="text"/>
+        <input id="imgSrcFileTxt" value="pentagram1" type="text"/>
+        <button onclick="loadImage()" >Load</button>
+        <button onclick="split()" >Split</button>
+        <label for="chkBig">Big?</label><input type="checkbox" id="chkBig"/>
+        <br/>
+        <img crossOrigin="Anonymous"  id="imgSrc" src="tilesets\decorations\symbols\pentagram1-1.png" width="70" height="70" style="border:1px solid black"/>
+        <hr/>
+        <div>
+            <canvas id="imageSplit-2-1" width="70" height="70" style="border: 1px solid #000000;"></canvas>
+            <canvas id="imageSplit-2-2" width="70" height="70" style="border: 1px solid #000000;"></canvas>
+            <br/>
+            <canvas id="imageSplit-2-3" width="70" height="70" style="border: 1px solid #000000;"></canvas>
+            <canvas id="imageSplit-2-4" width="70" height="70" style="border: 1px solid #000000;"></canvas>
+        </div>
+        <hr/>
+        <div>
+            <canvas id="imageSplit-3-1" width="70" height="70" style="border: 1px solid #000000;"></canvas>
+            <canvas id="imageSplit-3-2" width="70" height="70" style="border: 1px solid #000000;"></canvas>
+            <canvas id="imageSplit-3-3" width="70" height="70" style="border: 1px solid #000000;"></canvas>
+            <canvas id="imageSplit-3-4" width="70" height="70" style="border: 1px solid #000000;"></canvas>
+            <canvas id="imageSplit-3-5" width="70" height="70" style="border: 1px solid #000000;"></canvas>
+            <br/>
+            <canvas id="imageSplit-3-6" width="70" height="70" style="border: 1px solid #000000;"></canvas>
+            <canvas id="imageSplit-3-7" width="70" height="70" style="border: 1px solid #000000;"></canvas>
+            <canvas id="imageSplit-3-8" width="70" height="70" style="border: 1px solid #000000;"></canvas>
+            <canvas id="imageSplit-3-9" width="70" height="70" style="border: 1px solid #000000;"></canvas>
+            <canvas id="imageSplit-3-10" width="70" height="70" style="border: 1px solid #000000;"></canvas>
+            <br/>
+            <canvas id="imageSplit-3-11" width="70" height="70" style="border: 1px solid #000000;"></canvas>
+            <canvas id="imageSplit-3-12" width="70" height="70" style="border: 1px solid #000000;"></canvas>
+            <canvas id="imageSplit-3-13" width="70" height="70" style="border: 1px solid #000000;"></canvas>
+            <canvas id="imageSplit-3-14" width="70" height="70" style="border: 1px solid #000000;"></canvas>
+            <canvas id="imageSplit-3-15" width="70" height="70" style="border: 1px solid #000000;"></canvas>
+            <br/>
+            <canvas id="imageSplit-3-16" width="70" height="70" style="border: 1px solid #000000;"></canvas>
+            <canvas id="imageSplit-3-17" width="70" height="70" style="border: 1px solid #000000;"></canvas>
+            <canvas id="imageSplit-3-18" width="70" height="70" style="border: 1px solid #000000;"></canvas>
+            <canvas id="imageSplit-3-19" width="70" height="70" style="border: 1px solid #000000;"></canvas>
+            <canvas id="imageSplit-3-20" width="70" height="70" style="border: 1px solid #000000;"></canvas>
+            <br/>
+            <canvas id="imageSplit-3-21" width="70" height="70" style="border: 1px solid #000000;"></canvas>
+            <canvas id="imageSplit-3-22" width="70" height="70" style="border: 1px solid #000000;"></canvas>
+            <canvas id="imageSplit-3-23" width="70" height="70" style="border: 1px solid #000000;"></canvas>
+            <canvas id="imageSplit-3-24" width="70" height="70" style="border: 1px solid #000000;"></canvas>
+            <canvas id="imageSplit-3-25" width="70" height="70" style="border: 1px solid #000000;"></canvas>
+        </div>
+        <br/>
+        <div>
+            <canvas id="imageSplit-4-1" width="70" height="70" style="border: 1px solid #000000;"></canvas>
+            <canvas id="imageSplit-4-2" width="70" height="70" style="border: 1px solid #000000;"></canvas>
+            <br/>
+            <canvas id="imageSplit-4-3" width="70" height="70" style="border: 1px solid #000000;"></canvas>
+            <canvas id="imageSplit-4-4" width="70" height="70" style="border: 1px solid #000000;"></canvas>
+        </div>
+        <br/>
+        <div>
+            <canvas id="imageSplit-5-1" width="70" height="70" style="border: 1px solid #000000;"></canvas>
+            <canvas id="imageSplit-5-2" width="70" height="70" style="border: 1px solid #000000;"></canvas>
+            <canvas id="imageSplit-5-3" width="70" height="70" style="border: 1px solid #000000;"></canvas>
+            <br/>
+            <canvas id="imageSplit-5-4" width="70" height="70" style="border: 1px solid #000000;"></canvas>
+            <canvas id="imageSplit-5-5" width="70" height="70" style="border: 1px solid #000000;"></canvas>
+            <canvas id="imageSplit-5-6" width="70" height="70" style="border: 1px solid #000000;"></canvas>
+            <br/>
+            <canvas id="imageSplit-5-7" width="70" height="70" style="border: 1px solid #000000;"></canvas>
+            <canvas id="imageSplit-5-8" width="70" height="70" style="border: 1px solid #000000;"></canvas>
+            <canvas id="imageSplit-5-9" width="70" height="70" style="border: 1px solid #000000;"></canvas>
+        </div>
+        <textarea id="output"></textarea>
+    </body>
+</html>
