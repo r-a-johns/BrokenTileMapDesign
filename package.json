@@ -1,0 +1,11 @@
+{
+    "name": "broken-tile-map-design",
+    "description": "Broken's Tile Map Design project",
+    "version": "0.0.1",
+    "private": true,
+    "license": "MIT",
+    "author": "Broken",
+    "scripts": {
+        "start": "node node.js"
+    }
+}
