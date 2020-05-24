@@ -50,21 +50,6 @@ function drawSquare(ctx, x, y, imgs) {
         ctx.fillStyle = "red";
     }
     drawImgsOnCanvas(ctx, imgs, oX, oY, dX, dY)
-/*    try {
-        ctx.drawImage(tileSet[0], oX, oY, dX, dY)
-        if ((imgs != null) && (imgs.length > 0)) {
-            for (var c = 0; c < imgs.length; c++) {
-                let i = imgs[c];
-                try{
-                    ctx.drawImage(tileSet[i], oX, oY, dX, dY)
-                } catch (e) {
-                    //alert(e);
-                }
-            };
-        }
-    } catch (e) {
-        //alert(e);
-    }*/
     if (document.getElementById("showXY").checked) {
         ctx.font = "10px Comic Sans MS";
         ctx.textAlign = "left";
@@ -275,12 +260,36 @@ function renderPalete(){
     for(var i=0;i<paleteMap.length;i++){
         let e = document.getElementById("paleteCanvas-"+i);
         let ctx = getContext(document.getElementById("paleteCanvas-"+i));
-        drawImgsOnCanvas(ctx, paleteMap[i], 0, 0, e.width, e.height)
+        drawImgsOnCanvas(ctx, paleteMap[i].img, 0, 0, e.width, e.height)
     }
 }
 
 function addPaleteToTile(x, y, p, bottom){
-    for(let i=0;i<paleteMap[p].length;i++){
-        addToSquare(mapArray[x][y], paleteMap[p][i], bottom)
+    for(let i=0;i<paleteMap[p].img.length;i++){
+        addToSquare(mapArray[x][y], paleteMap[p].img[i], bottom)
     }
 }
+
+function addTileToPalete(tile, p, bottom){
+    addToSquare(paleteMap[p], tile, bottom)
+}
+
+function clearPalete(p){
+    paleteMap[p].img=[];
+    render();
+}
+
+function whichTile(event){
+    let displayedImg = $("#myTabContent .active img");
+    for(let i=0;i<displayedImg.length;i++){
+        let elem = displayedImg[i];
+        eTop = window.scrollY + elem.getBoundingClientRect().top // Y
+        eLeft = window.scrollX + elem.getBoundingClientRect().left
+        if((event.pageX>=eLeft)&&(event.pageX<(elem.width + eLeft))){
+            if((event.pageY>=eTop)&&(event.pageY<(elem.height + eTop))){
+                return elem;
+            }
+        }       
+    }
+}
+

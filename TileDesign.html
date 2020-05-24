@@ -21,16 +21,16 @@
             var mapArray = [];
             var lastImg = null;
             var paleteMap = [
-                ["floordark1-1", "grass1-1"],
-                ["floordark1-1"],
-                ["floorlight1-1"],
-                ["path1-1"],
-                ["grass1-1"],
-                ["blue1-1"],
-                ["floordark1-1"],
-                ["floordark1-1"],
-                ["floordark1-1"],
-                ["floordark1-1"],
+                {"p": 0,"img": ["floordark1-1"]},
+                {"p": 1,"img": []},
+                {"p": 2,"img": []},
+                {"p": 3,"img": []},
+                {"p": 4,"img": []},
+                {"p": 5,"img": []},
+                {"p": 6,"img": []},
+                {"p": 7,"img": []},
+                {"p": 8,"img": []},
+                {"p": 9,"img": []},
             ];
             function setup() {
                 loadTileSet();
@@ -77,8 +77,14 @@
                     case "Numpad8":
                     case "Digit9":
                     case "Numpad9":
+                        let p = keyUpEvent.code[keyUpEvent.code.length-1];
                         if((w.x>=0)&&(w.x<widthInTiles)&&(w.y>=0)&&(w.y<heightInTiles)){
-                            addPaleteToTile(w.x, w.y, keyUpEvent.code[keyUpEvent.code.length-1], keyUpEvent.shiftKey)
+                            addPaleteToTile(w.x, w.y, p, keyUpEvent.shiftKey)
+                        } else {
+                            let t = whichTile(keyUpEvent);
+                            if(t!=null){
+                                addTileToPalete(t.id, p, event.shiftKey);
+                            }
                         }
                     default:
                         break;

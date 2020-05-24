@@ -5468,6 +5468,7 @@ function loadTileSet() {
                 }
                 let img = document.createElement("img");
                 img.setAttribute("src", "tilesets/" + t.src);
+                img.setAttribute("id", t.id);
                 img.setAttribute("tilesetId", t.id);
                 img.setAttribute("width", 40);
                 img.setAttribute("height", 40);
