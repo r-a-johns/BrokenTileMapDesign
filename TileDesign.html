@@ -57,6 +57,11 @@
                             removeTile(w.x, w.y, mapArray[w.x][w.y].img.length-1);
                         }
                         break;
+                    case "KeyC":
+                        if((w.x>=0)&&(w.x<widthInTiles)&&(w.y>=0)&&(w.y<heightInTiles)){
+                            clearSquare(w.x, w.y);
+                        }
+                        break;
                     case "Digit0":
                     case "Numpad0":
                     case "Digit1":

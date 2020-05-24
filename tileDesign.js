@@ -210,7 +210,11 @@ function moveTile(iX, iY, iZ, up){
     render(mapArray[iX][iY]);
     displaySelectedInfo(mapArray[sX][sY]);
 }
-
+function clearSquare(x, y){
+    mapArray[x][y].img = [];
+    render(mapArray[x][y]);
+    displaySelectedInfo(mapArray[sX][sY]);
+}
 function export2txt() {
     const a = document.createElement("a");
     a.href = URL.createObjectURL(new Blob([JSON.stringify(map)], {
@@ -268,6 +272,7 @@ function addPaleteToTile(x, y, p, bottom){
     for(let i=0;i<paleteMap[p].img.length;i++){
         addToSquare(mapArray[x][y], paleteMap[p].img[i], bottom)
     }
+    displaySelectedInfo(mapArray[x][y]);
 }
 
 function addTileToPalete(tile, p, bottom){
