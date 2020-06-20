@@ -1,0 +1,240 @@
+<html>
+    <head>
+        <script>
+            var b = [
+                {name: "Sand", short: "SA", imageId: "SA"},
+            ]
+            var config = [
+                {
+                    n: "E-01",
+                    t: [
+                        {n: "1-1", tile:"ET-1-1-1", lines: ["EL-1-1-2"]},
+                        {n: "1-2", tile:"ET-1-1-2", lines: ["EL-1-2-3"]},
+                        {n: "1-3", tile:"ET-1-1-3", lines: ["EL-1-1-2", "EL-1-2-3"]},
+                        {n: "2-2", tile:"ET-1-2-2", lines: ["EL-1-1-2", "EL-1-2-3"]},
+                        {n: "2-3", tile:"ET-1-2-3", lines: ["EL-1-1-2"]},
+                        {n: "3-3", tile:"ET-1-3-3", lines: ["EL-1-2-3"]},
+                    ]
+                },
+                {
+                    n: "E-02",
+                    t: [
+                        {n: "1-1", tile:"ET-2-1-1", lines: ["EL-2-1-2"]},
+                        {n: "1-2", tile:"ET-2-1-2", lines: ["EL-2-2-3"]},
+                        {n: "2-3", tile:"ET-2-1-3", lines: ["EL-2-1-2", "EL-2-2-3"]},
+                        {n: "2-2", tile:"ET-2-2-2", lines: ["EL-2-1-2", "EL-2-2-3"]},
+                        {n: "2-3", tile:"ET-2-2-3", lines: ["EL-2-1-2"]},
+                        {n: "3-3", tile:"ET-2-3-3", lines: ["EL-2-2-3"]},
+                    ]
+                },
+            ]
+            function load(){
+                let allTileSets = []
+                for(let i=0;i<config.length;i++){
+                    allTileSets.push(createTileSetForAllBackgrounds(config[i].n, config[i].t, b));
+                }
+                let images = [];
+                let json = [];
+                for(let i=0;i<allTileSets.length;i++){
+                    for(let ii=0;ii<allTileSets[i].length;ii++){
+                        for(let iii=0;iii<allTileSets[i][ii].tileSet.length;iii++){
+                            for(let iiii=0;iiii<allTileSets[i][ii].tileSet[iii].length;iiii++){
+                                let x = allTileSets[i][ii].tileSet[iii][iiii];
+                                json.push({
+                                    id: x.id, src: 'mine/'+ x.id + '.png', subset: 'floordark1', br: (iiii==3?true:false),
+                                })
+                                images.push(x);
+                            }
+                        }
+                    }
+                }
+                document.getElementById("output").value = JSON.stringify(json, null, ' ');
+                //outputAllImages(images);
+            }
+            function createTileSetForAllBackgrounds(name, tiles, backgrounds){
+                let tileSets = [];
+                for(let backgroundsI=0;backgroundsI<backgrounds.length;backgroundsI++){
+                    backgrounds[backgroundsI].image = document.getElementById(backgrounds[backgroundsI].imageId);
+                    tileSets[backgroundsI] = {
+                        background: backgrounds[backgroundsI],
+                        tileSet: createTileSet(backgrounds[backgroundsI], tiles, name)
+                    }
+                    let div = document.getElementById("div1");
+                    for(let i=0;i<tileSets[backgroundsI].tileSet.length;i++){
+                        for(let ii=0;ii<tileSets[backgroundsI].tileSet[i].length;ii++){
+                            div.appendChild(tileSets[backgroundsI].tileSet[i][ii].image);
+                        }
+                        div.appendChild(document.createElement("br"))
+                    }
+                    div.appendChild(document.createElement("br"))
+                }
+                return tileSets;
+            }
+
+            function createTileSet(background, tileSetDef, name){
+                let tileSet = [];
+                for(let i=0;i<tileSetDef.length;i++){
+                    let subSet = [];
+                    let idPrefix = background.short + "-" + name + "-" + tileSetDef[i].n + "-";
+                    let smallSubSet = createSmallSubSet(idPrefix, background.image, tileSetDef[i].tile, tileSetDef[i].lines);
+                    //tileSet.push(createTilesFromSmallSubSet(smallSubSet, idPrefix))
+                    let tiles = [
+                        {id: idPrefix + "A",  src: 'directory' + '/' + idPrefix + 'A' + '.png',  subset: idPrefix,  image: smallSubSet.canvasA, },
+                        {id: idPrefix + "B",  src: 'directory' + '/' + idPrefix + 'B' + '.png',  subset: idPrefix,  image: smallSubSet.canvasB, },
+                        {id: idPrefix + "C",  src: 'directory' + '/' + idPrefix + 'C' + '.png',  subset: idPrefix,  image: smallSubSet.canvasC, },
+                        {id: idPrefix + "D",  src: 'directory' + '/' + idPrefix + 'D' + '.png',  subset: idPrefix,  image: smallSubSet.canvasD, },
+                    ]
+                    tileSet.push(tiles);
+                }
+                return tileSet;
+            }
+
+            function createSmallSubSet(idPrefix, backgroundImage, tile, lines){
+                let smallSubSet = {};
+                smallSubSet.canvasA = createCanvas(140, 140, idPrefix + "A")
+                smallSubSet.canvasB = createCanvas(140, 140, idPrefix + "B")
+                smallSubSet.canvasC = createCanvas(140, 140, idPrefix + "C")
+                smallSubSet.canvasD = createCanvas(140, 140, idPrefix + "D")
+                smallSubSet.canvasTempB1 = createCanvas(140, 140, idPrefix + "TempB1")
+                smallSubSet.canvasTempC1 = createCanvas(140, 140, idPrefix + "TempC1")
+                smallSubSet.canvasTempC2 = createCanvas(140, 140, idPrefix + "TempC2")
+                smallSubSet.canvasTempD1 = createCanvas(140, 140, idPrefix + "TempD1")
+                smallSubSet.canvasTempD2 = createCanvas(140, 140, idPrefix + "TempD2")
+                smallSubSet.canvasTempD3 = createCanvas(140, 140, idPrefix + "TempD3")
+
+                smallSubSet.backgroundA = createCanvas(140, 140, "background" + idPrefix + "A")
+                smallSubSet.backgroundB = createCanvas(140, 140, "background" + idPrefix + "B")
+                smallSubSet.backgroundC = createCanvas(140, 140, "background" + idPrefix + "C")
+                smallSubSet.backgroundD = createCanvas(140, 140, "background" + idPrefix + "D")
+
+                smallSubSet.backgroundA = backgroundImage;
+                drawRotated90(smallSubSet.backgroundD, smallSubSet.backgroundA)
+                drawRotated90(smallSubSet.backgroundC, smallSubSet.backgroundD)
+                drawRotated90(smallSubSet.backgroundB, smallSubSet.backgroundC)
+
+                mergeTileImages(smallSubSet.canvasA, smallSubSet.backgroundA, tile, lines);
+                mergeTileImages(smallSubSet.canvasTempB1, smallSubSet.backgroundB, tile, lines);
+                mergeTileImages(smallSubSet.canvasTempC1, smallSubSet.backgroundC, tile, lines);
+                mergeTileImages(smallSubSet.canvasTempD1, smallSubSet.backgroundD, tile, lines);
+
+                drawRotated90(smallSubSet.canvasB, smallSubSet.canvasTempB1)
+                drawRotated90(smallSubSet.canvasTempC2, smallSubSet.canvasTempC1)
+                drawRotated90(smallSubSet.canvasC, smallSubSet.canvasTempC2)
+                drawRotated90(smallSubSet.canvasTempD2, smallSubSet.canvasTempD1)
+                drawRotated90(smallSubSet.canvasTempD3, smallSubSet.canvasTempD2)
+                drawRotated90(smallSubSet.canvasD, smallSubSet.canvasTempD3)
+                return smallSubSet;
+            }
+
+            function createTilesFromSmallSubSet(smallSubSet, idPrefix){
+                let tiles = [];
+                tiles.push(createTileJson(idPrefix + "A" + "-1", "directory", idPrefix, smallSubSet.canvasA, 0,     0, 140, 140))
+                tiles.push(createTileJson(idPrefix + "A" + "-2", "directory", idPrefix, smallSubSet.canvasA, 140,   0, 140, 140))
+                tiles.push(createTileJson(idPrefix + "A" + "-3", "directory", idPrefix, smallSubSet.canvasA, 0,   140, 140, 140))
+                tiles.push(createTileJson(idPrefix + "A" + "-4", "directory", idPrefix, smallSubSet.canvasA, 140, 140, 140, 140))
+                tiles.push(createTileJson(idPrefix + "B" + "-1", "directory", idPrefix, smallSubSet.canvasB, 0,     0, 140, 140))
+                tiles.push(createTileJson(idPrefix + "B" + "-2", "directory", idPrefix, smallSubSet.canvasB, 140,   0, 140, 140))
+                tiles.push(createTileJson(idPrefix + "B" + "-3", "directory", idPrefix, smallSubSet.canvasB, 0,   140, 140, 140))
+                tiles.push(createTileJson(idPrefix + "B" + "-4", "directory", idPrefix, smallSubSet.canvasB, 140, 140, 140, 140))
+                tiles.push(createTileJson(idPrefix + "C" + "-1", "directory", idPrefix, smallSubSet.canvasC, 0,     0, 140, 140))
+                tiles.push(createTileJson(idPrefix + "C" + "-2", "directory", idPrefix, smallSubSet.canvasC, 140,   0, 140, 140))
+                tiles.push(createTileJson(idPrefix + "C" + "-3", "directory", idPrefix, smallSubSet.canvasC, 0,   140, 140, 140))
+                tiles.push(createTileJson(idPrefix + "C" + "-4", "directory", idPrefix, smallSubSet.canvasC, 140, 140, 140, 140))
+                tiles.push(createTileJson(idPrefix + "D" + "-1", "directory", idPrefix, smallSubSet.canvasD, 0,     0, 140, 140))
+                tiles.push(createTileJson(idPrefix + "D" + "-2", "directory", idPrefix, smallSubSet.canvasD, 140,   0, 140, 140))
+                tiles.push(createTileJson(idPrefix + "D" + "-3", "directory", idPrefix, smallSubSet.canvasD, 0,   140, 140, 140))
+                tiles.push(createTileJson(idPrefix + "D" + "-4", "directory", idPrefix, smallSubSet.canvasD, 140, 140, 140, 140))
+                return tiles;
+            }
+
+            function createTileJson(id, directory, subset, smallImage, x, y, w, h){
+                //{id: 'waterlily1-3-5', src: 'decorations/nature/waterlily1-3-5.png', subset: 'waterlily1-3', }
+                return {
+                    id: id, 
+                    src: directory + '/' + id + '.png', 
+                    subset: subset, 
+                    image: drawImageOnCanvas(createCanvas(280, 280, id), smallImage, x, y, w, h),
+                }
+            }
+            function createCanvas(width, height, id){
+                var canvas = document.createElement("canvas");
+                canvas.width = width;
+                canvas.height = height;
+                canvas.id = id;
+                return canvas;
+            }
+            function drawImageOnCanvas(canvas, image, x, y, w, h){
+                var ctx = canvas.getContext("2d");    
+                ctx.drawImage(image, x, y, w, h);
+                return canvas;
+            }
+            function mergeTileImages(canvas, background, tile, lines){
+                var ctx = canvas.getContext("2d");    
+                ctx.drawImage(background, 0, 0, 140, 140);
+                ctx.globalCompositeOperation = "xor";
+                ctx.drawImage(document.getElementById(tile), 0, 0, 140, 140);
+                var ctx2 = canvas.getContext("2d");
+                for(let ii=0;ii<lines.length;ii++){
+                    ctx2.drawImage(document.getElementById(lines[ii]), 0, 0, 140, 140);
+                }
+            }
+            function drawRotated90(targetCanvas, sourceImage){
+                let ctxT = targetCanvas.getContext("2d");
+                ctxT.translate(targetCanvas.width/2, targetCanvas.height/2);
+                ctxT.rotate(Math.PI/2);
+                ctxT.drawImage(sourceImage, -(sourceImage.width/2), -(sourceImage.height/2), sourceImage.width, sourceImage.height);
+            }
+            function outputAllImages(images){
+                let image = images.pop();
+                downloadCanvasAsImage(image.image, image.id);
+                if(images.length>0){
+                    setTimeout(outputAllImages, 300, images);
+                }
+            }
+            function downloadCanvasAsImage(canvas, name){
+                let downloadLink = document.createElement('a');
+                downloadLink.setAttribute('download', name + '.png');
+                canvas.toBlob(function(blob) {
+                    let url = URL.createObjectURL(blob);
+                    downloadLink.setAttribute('href', url);
+                    downloadLink.click();
+                });
+            }
+        </script>
+    </head>
+    <body onload="load()">
+        <div style="border: 1px solid black;">
+            <div>
+                <img id="SA" src="working/SA.png" width="140" height="140"/>
+            </div>
+            <div>
+                <img id="EL-1-1-2" src="working/EL-1-1-2.png" width="140" height="140"/>
+                <img id="EL-1-2-3" src="working/EL-1-2-3.png" width="140" height="140"/>
+            </div>
+            <div>
+                <img id="ET-1-1-1" src="working/ET-1-1-1.png" width="140" height="140"/>
+                <img id="ET-1-1-2" src="working/ET-1-1-2.png" width="140" height="140"/>
+                <img id="ET-1-1-3" src="working/ET-1-1-3.png" width="140" height="140"/>
+                <img id="ET-1-2-2" src="working/ET-1-2-2.png" width="140" height="140"/>
+                <img id="ET-1-2-3" src="working/ET-1-2-3.png" width="140" height="140"/>
+                <img id="ET-1-3-3" src="working/ET-1-3-3.png" width="140" height="140"/>
+            </div>
+            <div>
+                <img id="EL-2-1-2" src="working/EL-2-1-2.png" width="140" height="140"/>
+                <img id="EL-2-2-3" src="working/EL-2-2-3.png" width="140" height="140"/>
+            </div>
+            <div>
+                <img id="ET-2-1-1" src="working/ET-2-1-1.png" width="140" height="140"/>
+                <img id="ET-2-1-2" src="working/ET-2-1-2.png" width="140" height="140"/>
+                <img id="ET-2-1-3" src="working/ET-2-1-3.png" width="140" height="140"/>
+                <img id="ET-2-2-2" src="working/ET-2-2-2.png" width="140" height="140"/>
+                <img id="ET-2-2-3" src="working/ET-2-2-3.png" width="140" height="140"/>
+                <img id="ET-2-3-3" src="working/ET-2-3-3.png" width="140" height="140"/>
+            </div>
+        </div>
+        <div><textarea id="output"></textarea></div>
+        <div id="div1"></div>
+    </body>
+</html>
+
+

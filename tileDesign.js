@@ -1,223 +1,241 @@
-function loadMap(m) {
-    map = m;
-    mapArray = [];
-    for (var i = 0; i < map.length; i++) {
-        let square = map[i];
-        if (mapArray[square.x] == null) {
-            mapArray[square.x] = []
-        }
-        mapArray[square.x][square.y] = square;
+function getEmptySaveData(){
+    let emptySaveData = {
+        version: 1,
+        tileWidth: 70,
+        tileHeight: 70,
+        heightInTiles: 50,
+        widthInTiles: 50,
+        mapArray: emptyMapArray(),
+        paleteMap: [
+            {p: 0, imgs: []},
+            {p: 1, imgs: []},
+            {p: 2, imgs: []},
+            {p: 3, imgs: []},
+            {p: 4, imgs: []},
+            {p: 5, imgs: []},
+            {p: 6, imgs: []},
+            {p: 7, imgs: []},
+            {p: 8, imgs: []},
+            {p: 9, imgs: []},
+        ]
     }
+    return emptySaveData;
 }
 
-function getContext(c) {
-    let ctx = c.getContext("2d");
+function emptyMapArray() {
+    let mapArray = [];
+    for (var mapArrayX = 0; mapArrayX < 50; mapArrayX++) {
+        mapArray[mapArrayX] = []
+        for (var mayArrayY = 0; mayArrayY < 50; mayArrayY++) {
+            mapArray[mapArrayX][mayArrayY] = {
+                x: mapArrayX,
+                y: mayArrayY,
+                imgs: []
+            };
+        }
+    }
+    return mapArray;
+}
+
+function getContext(canvas) {
+    let ctx = canvas.getContext("2d");
     ctx.lineWidth = 1;
     return ctx;
 }
 
-function drawImgsOnCanvas(ctx, imgs, oX, oY, dX, dY){
+function drawImgsOnCanvas(ctx, imgs, cordX, cordY, width, height){
     try {
-        ctx.clearRect(oX, oY, dX, dY)
+        ctx.clearRect(cordX, cordY, width, height)
         if ((imgs != null) && (imgs.length > 0)) {
-            for (var c = 0; c < imgs.length; c++) {
-                let i = imgs[c];
+            for (let c = 0; c < imgs.length; c++) {
+                let img = imgs[c];
                 try{
-                    ctx.drawImage(tileSet[i], oX, oY, dX, dY)
+                    ctx.drawImage(tileSet[img], cordX, cordY, width, height)
                 } catch (e) {
-                    //alert(e);
                 }
             };
         }
     } catch (e) {
-        //alert(e);
     }
 }
 
-function drawSquare(ctx, x, y, imgs) {
-    var oX = dX * x,
-        oY = dY * y;
+function drawSquare(ctx, squareX, squareY, imgs, width, height) {
+    let cordX = width * squareX,
+        cordY = height * squareY;
     ctx.beginPath();
     if (document.getElementById("showRedGrid").checked) {
         ctx.strokeStyle = "red";
     } else {
         ctx.strokeStyle = "black";
     }
-    if ((sX == x) && (sY == y)) {
+    if ((tempData.sX == squareX) && (tempData.sY == squareY)) {
         ctx.strokeStyle = "blue";
         ctx.fillStyle = "blue";
     } else {
         ctx.fillStyle = "red";
     }
-    drawImgsOnCanvas(ctx, imgs, oX, oY, dX, dY)
+    drawImgsOnCanvas(ctx, imgs, cordX, cordY, saveData.tileWidth, saveData.tileHeight)
     if (document.getElementById("showXY").checked) {
         ctx.font = "10px Comic Sans MS";
         ctx.textAlign = "left";
-        ctx.fillText("[" + x + "," + y + "]", oX, 10 + oY);
+        ctx.fillText("[" + squareX + "," + squareY + "]", cordX, 10 + cordY);
     }
     if (document.getElementById("showGrid").checked) {
-        ctx.strokeRect(oX, oY, dX, dY);
+        ctx.strokeRect(cordX, cordY, saveData.tileWidth, saveData.tileHeight);
     }
-    if ((sX == x) && (sY == y)) {
-        ctx.strokeRect(oX, oY, dX, dY);
+    if ((tempData.sX == squareX) && (tempData.sY == squareY)) {
+        ctx.strokeRect(cordX, cordY, saveData.tileWidth, saveData.tileHeight);
     }
 }
 
-function render(sq) {
+function render(square) {
     let ctx = getContext(document.getElementById("mapCanvas"));
-    if (sq == null) {
-        for (var i = 0; i < map.length; i++) {
-            let square = map[i];
-            drawSquare(ctx, square.x, square.y, square.img);
+    if (square == null) {
+        for (let mapArrayX = 0; mapArrayX < saveData.mapArray.length; mapArrayX++) {
+            for (let mapArrayY = 0; mapArrayY < saveData.mapArray[mapArrayX].length; mapArrayY++) {
+                let square = saveData.mapArray[mapArrayX][mapArrayY];
+                drawSquare(ctx, square.x, square.y, square.imgs, saveData.tileWidth, saveData.tileHeight);
+            }
         }
     } else {
-        drawSquare(ctx, sq.x, sq.y, sq.img);
+        drawSquare(ctx, square.x, square.y, square.imgs, saveData.tileWidth, saveData.tileHeight);
     }
     renderPalete();
 }
 
 function addToSquare(square, tile, bottom){
     if(bottom){
-        if((square.img.length!=0)&&(square.img[0]==tile)){
+        if((square.imgs.length!=0)&&(square.imgs[0]==tile)){
         } else {
-            square.img.unshift(tile);
+            square.imgs.unshift(tile);
         }
     } else {
-        if((square.img.length!=0)&&(square.img[square.img.length-1]==tile)){
+        if((square.imgs.length!=0)&&(square.imgs[square.imgs.length-1]==tile)){
         } else {
-            square.img.push(tile);
+            square.imgs.push(tile);
         }
     }
     render(square);
 }
 function whereOnCanvas(event){
     let elem = document.getElementById('mapCanvas');
-    let elemLeft = elem.offsetLeft,
-        elemTop = elem.offsetTop;
-    let selemLeft = elem.parentNode.scrollLeft,
-        selemTop = elem.parentNode.scrollTop;
-    let pelemLeft = elem.parentNode.offsetLeft,
-        pelemTop = elem.parentNode.offsetTop;
-    let x = selemLeft + (event.pageX - (pelemLeft + elemLeft)),
-        y = selemTop + (event.pageY - (pelemTop + elemTop));
-    return {x:Math.floor(x / dX, 0),y:Math.floor(y / dY, 0)}
+    let elemOffsetLeft = elem.offsetLeft,
+        elemOffsetTop = elem.offsetTop;
+    let elemScrollLeft = elem.parentNode.scrollLeft,
+        elemScrollTop = elem.parentNode.scrollTop;
+    let elemParentOffsetLeft = elem.parentNode.offsetLeft,
+        elemParentOffsetTop = elem.parentNode.offsetTop;
+    let x = elemScrollLeft + (event.pageX - (elemParentOffsetLeft + elemOffsetLeft)),
+        y = elemScrollTop + (event.pageY - (elemParentOffsetTop + elemOffsetTop));
+    return {x:Math.floor(x / saveData.tileWidth, 0),y:Math.floor(y / saveData.tileHeight, 0)}
 }
 function canvasEvent(event) {
     if(event.type=="click"){
-        let w = whereOnCanvas(event)
-        oSX = sX; oSY = sY;
-        sX = w.x; sY = w.y;
-        if ((lastImg != null) && (event.ctrlKey == true)) {
-            addToSquare(mapArray[sX][sY], lastImg, event.shiftKey);
+        let where = whereOnCanvas(event)
+        let previousSquareX = tempData.sX, previousSquareY = tempData.sY;
+        tempData.sX = where.x; tempData.sY = where.y;
+        if ((tempData.lastImg != null) && (event.ctrlKey == true)) {
+            addToSquare(saveData.mapArray[tempData.sX][tempData.sY], tempData.lastImg, event.shiftKey);
         }
-        if ((lastImg != null) && (event.altKey == true)) {
-            if (oSX <= sX) {
-                for (var iX = oSX; iX <= sX; iX++) {
-                    if (oSY <= sY) {
-                        for (var iY = oSY; iY <= sY; iY++) {
-                            addToSquare(mapArray[iX][iY], lastImg, event.shiftKey);
+        if ((tempData.lastImg != null) && (event.altKey == true)) {
+            if (previousSquareX <= tempData.sX) {
+                for (var iX = previousSquareX; iX <= tempData.sX; iX++) {
+                    if (previousSquareY <= tempData.sY) {
+                        for (var iY = previousSquareY; iY <= tempData.sY; iY++) {
+                            addToSquare(saveData.mapArray[iX][iY], tempData.lastImg, event.shiftKey);
                         }
                     } else {
-                        for (var iY = sY; iY <= oSY; iY++) {
-                            addToSquare(mapArray[iX][iY], lastImg, event.shiftKey);
+                        for (var iY = tempData.sY; iY <= previousSquareY; iY++) {
+                            addToSquare(saveData.mapArray[iX][iY], tempData.lastImg, event.shiftKey);
                         }
                     }
                 }
             } else {
-                for (var iX = sX; iX <= oSX; iX++) {
-                    if (oSY <= sY) {
-                        for (var iY = oSY; iY <= sY; iY++) {
-                            addToSquare(mapArray[iX][iY], lastImg, event.shiftKey);
+                for (var iX = tempData.sX; iX <= previousSquareX; iX++) {
+                    if (previousSquareY <= tempData.sY) {
+                        for (var iY = previousSquareY; iY <= tempData.sY; iY++) {
+                            addToSquare(saveData.mapArray[iX][iY], tempData.lastImg, event.shiftKey);
                         }
                     } else {
-                        for (var iY = sY; iY <= oSY; iY++) {
-                            addToSquare(mapArray[iX][iY], lastImg, event.shiftKey);
+                        for (var iY = tempData.sY; iY <= previousSquareY; iY++) {
+                            addToSquare(saveData.mapArray[iX][iY], tempData.lastImg, event.shiftKey);
                         }
                     }
                 }
             }
         }
-        displaySelectedInfo(mapArray[sX][sY]);
-        if (oSX != null) {
-            render(mapArray[oSX][oSY]);
+        displaySelectedInfo(saveData.mapArray[tempData.sX][tempData.sY]);
+        if (previousSquareX != null) {
+            render(saveData.mapArray[previousSquareX][previousSquareY]);
         }
-        render(mapArray[sX][sY]);                    
+        render(saveData.mapArray[tempData.sX][tempData.sY]);                    
     }
 }
 
 function displaySelectedInfo(square) {
     document.getElementById('selectedCoordsDiv').innerHTML = "(" + square.x + ", " + square.y + ")"
     document.getElementById('selectedImgDiv').innerHTML = "";
-    let imgText = "";
-    square.img.forEach(function (i, c) {
+    square.imgs.forEach(function (i, c) {
         let x = document.createElement("div")
         try{
             let z = tileSet[i].cloneNode(true);
             z.setAttribute("onclick", "");
             x.appendChild(z);
         } catch (e){}
-
-        //imgText += '<img src="' + tileSet[i] +'" width="70" height="70" /> <br/>';
-        //z.setAttribute("onclick", "removeTile(" + square.x + ", " + square.y + ", " + c + ")");
         const xsf = '<button onclick="removeTile(' + square.x + ', ' + square.y + ', ' + c + ')"><svg class="bi bi-x-square-fill" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M2 0a2 2 0 00-2 2v12a2 2 0 002 2h12a2 2 0 002-2V2a2 2 0 00-2-2H2zm9.854 4.854a.5.5 0 00-.708-.708L8 7.293 4.854 4.146a.5.5 0 10-.708.708L7.293 8l-3.147 3.146a.5.5 0 00.708.708L8 8.707l3.146 3.147a.5.5 0 00.708-.708L8.707 8l3.147-3.146z" clip-rule="evenodd"/></svg></button>';
         const dsf = '<button onclick="moveTile(' + square.x + ', ' + square.y + ', ' + c + ', true)"><svg class="bi bi-dash-square-fill" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M2 0a2 2 0 00-2 2v12a2 2 0 002 2h12a2 2 0 002-2V2a2 2 0 00-2-2H2zm2 7.5a.5.5 0 000 1h8a.5.5 0 000-1H4z" clip-rule="evenodd"/></svg></button>';
         const psf = '<button onclick="moveTile(' + square.x + ', ' + square.y + ', ' + c + ', false)"><svg class="bi bi-plus-square-fill" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M2 0a2 2 0 00-2 2v12a2 2 0 002 2h12a2 2 0 002-2V2a2 2 0 00-2-2H2zm6.5 4a.5.5 0 00-1 0v3.5H4a.5.5 0 000 1h3.5V12a.5.5 0 001 0V8.5H12a.5.5 0 000-1H8.5V4z" clip-rule="evenodd"/></svg></button>';
         x.innerHTML += xsf + dsf + psf;
         document.getElementById('selectedImgDiv').appendChild(x);
-        //document.getElementById('selectedImgDiv').appendChild(document.createElement("BR"));
-
     });
-    //document.getElementById('selectedImgDiv').innerHTML = imgText;
-
 }
 
 function tilePicked(tile, event) {
-    if (sX != null) {
-        addToSquare(mapArray[sX][sY], tile, event.shiftKey);
-        lastImg = tile;
-        render(mapArray[sX][sY]);
-        displaySelectedInfo(mapArray[sX][sY]);
+    if (tempData.sX != null) {
+        addToSquare(saveData.mapArray[tempData.sX][tempData.sY], tile, event.shiftKey);
+        tempData.lastImg = tile;
+        render(saveData.mapArray[tempData.sX][tempData.sY]);
+        displaySelectedInfo(saveData.mapArray[tempData.sX][tempData.sY]);
     }
 }
 
-function removeTile(iX, iY, iZ) {
-    //mapArray[iX][iY].img = 
-    mapArray[iX][iY].img.splice(iZ, 1);
-    render(mapArray[iX][iY]);
-    displaySelectedInfo(mapArray[sX][sY]);
+function removeTile(squareX, squareY, imgsZ) {
+    saveData.mapArray[squareX][squareY].imgs.splice(imgsZ, 1);
+    render(saveData.mapArray[squareX][squareY]);
+    displaySelectedInfo(saveData.mapArray[tempData.sX][tempData.sY]);
 }
 
-function moveTile(iX, iY, iZ, up){
-    if(up){
-        if(iZ==0){
+function moveTile(squareX, squareY, imgsZ, moveUp){
+    if(moveUp){
+        if(imgsZ==0){
             return;
         } else {
-            let i1 = mapArray[iX][iY].img[iZ];
-            let i2 = mapArray[iX][iY].img[iZ-1];
-            mapArray[iX][iY].img[iZ] = i2;
-            mapArray[iX][iY].img[iZ-1] = i1;
+            let i1 = saveData.mapArray[squareX][squareY].imgs[imgsZ];
+            let i2 = saveData.mapArray[squareX][squareY].imgs[imgsZ-1];
+            saveData.mapArray[squareX][squareY].imgs[imgsZ] = i2;
+            saveData.mapArray[squareX][squareY].imgs[imgsZ-1] = i1;
         }
     } else {
-        if(iZ==(mapArray[iX][iY].img.length-1)){
+        if(imgsZ==(saveData.mapArray[squareX][squareY].imgs.length-1)){
             return;
         } else {
-            let i1 = mapArray[iX][iY].img[iZ];
-            let i2 = mapArray[iX][iY].img[iZ+1];
-            mapArray[iX][iY].img[iZ] = i2;
-            mapArray[iX][iY].img[iZ+1] = i1;
+            let i1 = saveData.mapArray[squareX][squareY].imgs[imgsZ];
+            let i2 = saveData.mapArray[squareX][squareY].imgs[imgsZ+1];
+            saveData.mapArray[squareX][squareY].imgs[imgsZ] = i2;
+            saveData.mapArray[squareX][squareY].imgs[imgsZ+1] = i1;
         }
     }
-    render(mapArray[iX][iY]);
-    displaySelectedInfo(mapArray[sX][sY]);
+    render(saveData.mapArray[squareX][squareY]);
+    displaySelectedInfo(saveData.mapArray[tempData.sX][tempData.sY]);
 }
-function clearSquare(x, y){
-    mapArray[x][y].img = [];
-    render(mapArray[x][y]);
-    displaySelectedInfo(mapArray[sX][sY]);
+function clearSquare(squareX, squareY){
+    saveData.mapArray[squareX][squareY].imgs = [];
+    render(saveData.mapArray[squareX][squareY]);
+    displaySelectedInfo(saveData.mapArray[tempData.sX][tempData.sY]);
 }
 function export2txt() {
     const a = document.createElement("a");
-    a.href = URL.createObjectURL(new Blob([JSON.stringify(map)], {
+    a.href = URL.createObjectURL(new Blob([JSON.stringify(saveData)], {
         type: "text/plain"
     }));
     a.setAttribute("download", "data.txt");
@@ -234,53 +252,80 @@ function fileSelected(event) {
         const reader = new FileReader();
         reader.addEventListener('load', (event) => {
             let text = event.target.result;
-            loadMap(JSON.parse(text));
+            loadSaveData(JSON.parse(text));
             render();
         });
         reader.readAsText(fileList[0]);
     }
 }
 
+function validateSaveData(sd){
+    if(!((sd.tileWidth!=null)&&(parseInt(sd.tileWidth))&&(parseInt(sd.tileWidth)>0)&&(parseInt(sd.tileWidth)<200))){return false;}
+    if(!((sd.tileHeight!=null)&&(parseInt(sd.tileHeight))&&(parseInt(sd.tileHeight)>0)&&(parseInt(sd.tileHeight)<200))){return false;}
+    if(!((sd.heightInTiles!=null)&&(parseInt(sd.heightInTiles))&&(parseInt(sd.heightInTiles)>0)&&(parseInt(sd.heightInTiles)<200))){return false;}
+    if(!((sd.widthInTiles!=null)&&(parseInt(sd.widthInTiles))&&(parseInt(sd.widthInTiles)>0)&&(parseInt(sd.widthInTiles)<200))){return false;}
+    return true;
+}
+
+function loadSaveData(sd){
+    if(sd.dx==null){
+        saveData = getEmptySaveData();
+    } else {
+        if(validateSaveData(sd)){
+            saveData = {
+                tileWidth: sd.tileWidth,
+                tileHeight: sd.tileHeight,
+                heightInTiles: sd.heightInTiles,
+                widthInTiles: sd.widthInTiles,
+                mapArray: sd.mapArray,
+                paleteMap: sd.paleteMap
+            }
+        } else {
+            alert("Error loading save data")
+        }    
+    }
+}
+
 function selectedWidthChanged(){
-    widthInTiles = parseInt(document.getElementById("inputGroupSelectWidth").value);
-    document.getElementById("mapCanvas").width = widthInTiles * dX;
+    saveData.widthInTiles = parseInt(document.getElementById("inputGroupSelectWidth").value);
+    document.getElementById("mapCanvas").width = saveData.widthInTiles * saveData.tileWidth;
     render();
 }
 function selectedHeightChanged(){
-    heightInTiles = parseInt(document.getElementById("inputGroupSelectHeight").value);
-    document.getElementById("mapCanvas").height = heightInTiles * dY;
+    saveData.heightInTiles = parseInt(document.getElementById("inputGroupSelectHeight").value);
+    document.getElementById("mapCanvas").height = saveData.heightInTiles * saveData.tileHeight;
     render();
 }
 function selectedZoomChanged(){
-    dX = parseInt(document.getElementById("inputGroupSelectZoom").value);
-    dY = parseInt(document.getElementById("inputGroupSelectZoom").value);
-    document.getElementById("mapCanvas").width = widthInTiles * dX;
-    document.getElementById("mapCanvas").height = heightInTiles * dY;
+    saveData.tileWidth = parseInt(document.getElementById("inputGroupSelectZoom").value);
+    saveData.tileHeight = parseInt(document.getElementById("inputGroupSelectZoom").value);
+    document.getElementById("mapCanvas").width = saveData.widthInTiles * saveData.tileWidth;
+    document.getElementById("mapCanvas").height = saveData.heightInTiles * saveData.tileHeight;
     render();
 }
 
 
 function renderPalete(){
-    for(var i=0;i<paleteMap.length;i++){
-        let e = document.getElementById("paleteCanvas-"+i);
+    for(var i=0;i<saveData.paleteMap.length;i++){
+        let canvas = document.getElementById("paleteCanvas-"+i);
         let ctx = getContext(document.getElementById("paleteCanvas-"+i));
-        drawImgsOnCanvas(ctx, paleteMap[i].img, 0, 0, e.width, e.height)
+        drawImgsOnCanvas(ctx, saveData.paleteMap[i].imgs, 0, 0, canvas.width, canvas.height)
     }
 }
 
-function addPaleteToTile(x, y, p, bottom){
-    for(let i=0;i<paleteMap[p].img.length;i++){
-        addToSquare(mapArray[x][y], paleteMap[p].img[i], bottom)
+function addPaleteToTile(squareX, squareY, p, bottom){
+    for(let i=0;i<saveData.paleteMap[p].imgs.length;i++){
+        addToSquare(saveData.mapArray[squareX][squareY], saveData.paleteMap[p].imgs[i], bottom)
     }
-    displaySelectedInfo(mapArray[x][y]);
+    displaySelectedInfo(saveData.mapArray[squareX][squareY]);
 }
 
 function addTileToPalete(tile, p, bottom){
-    addToSquare(paleteMap[p], tile, bottom)
+    addToSquare(saveData.paleteMap[p], tile, bottom)
 }
 
 function clearPalete(p){
-    paleteMap[p].img=[];
+    saveData.paleteMap[p].imgs=[];
     render();
 }
 
@@ -297,4 +342,3 @@ function whichTile(event){
         }       
     }
 }
-

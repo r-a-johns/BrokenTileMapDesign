@@ -5,96 +5,26 @@
         <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"> </script>
         <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"> </script>
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"> </script>
-        <script src="map.js"></script>
-        <script src="tilesets.js"></script>
         <script src="tileDesign.js"></script>
+        <script src="tilesets.js"></script>
+        <script src="events.js"></script>
         <script>
-            var mousePosition = {x:0, y:0};
-            var dX = 70;
-            var dY = 70;
-            var sX = null;
-            var sY = null;
-            var heightInTiles = 50;
-            var widthInTiles = 50;
+            var saveData = null;
+            var tempData = {
+                sX: null,
+                sY: null,
+                lastImg: null,
+            }
+
             var tileSet = [];
-            var map = null;
-            var mapArray = [];
-            var lastImg = null;
-            var paleteMap = [
-                {"p": 0,"img": ["floordark1-1"]},
-                {"p": 1,"img": []},
-                {"p": 2,"img": []},
-                {"p": 3,"img": []},
-                {"p": 4,"img": []},
-                {"p": 5,"img": []},
-                {"p": 6,"img": []},
-                {"p": 7,"img": []},
-                {"p": 8,"img": []},
-                {"p": 9,"img": []},
-            ];
+
             function setup() {
-                loadTileSet();
-                loadMap(defaultMap);
+                tileSet = getDefaultTileSet();
+                saveData = getEmptySaveData();
                 render();
             }
-            document.addEventListener('mousemove', function(mouseMoveEvent){
-                mousePosition.x = mouseMoveEvent.pageX;
-                mousePosition.y = mouseMoveEvent.pageY;
-            }, false);
+      
 
-            document.addEventListener('keyup', function(keyUpEvent){
-                keyUpEvent.pageX = mousePosition.x;
-                keyUpEvent.pageY = mousePosition.y;
-                let w = whereOnCanvas(keyUpEvent);
-                switch (keyUpEvent.code) {
-                    case  "KeyQ":
-                        if((w.x>=0)&&(w.x<widthInTiles)&&(w.y>=0)&&(w.y<heightInTiles)){
-                            removeTile(w.x, w.y, 0);
-                        }
-                        break;
-                    case "KeyW":
-                        if((w.x>=0)&&(w.x<widthInTiles)&&(w.y>=0)&&(w.y<heightInTiles)){
-                            removeTile(w.x, w.y, mapArray[w.x][w.y].img.length-1);
-                        }
-                        break;
-                    case "KeyC":
-                        if((w.x>=0)&&(w.x<widthInTiles)&&(w.y>=0)&&(w.y<heightInTiles)){
-                            clearSquare(w.x, w.y);
-                        }
-                        break;
-                    case "Digit0":
-                    case "Numpad0":
-                    case "Digit1":
-                    case "Numpad1":
-                    case "Digit2":
-                    case "Numpad2":
-                    case "Digit3":
-                    case "Numpad3":
-                    case "Digit4":
-                    case "Numpad4":
-                    case "Digit5":
-                    case "Numpad5":
-                    case "Digit6":
-                    case "Numpad6":
-                    case "Digit7":
-                    case "Numpad7":
-                    case "Digit8":
-                    case "Numpad8":
-                    case "Digit9":
-                    case "Numpad9":
-                        let p = keyUpEvent.code[keyUpEvent.code.length-1];
-                        if((w.x>=0)&&(w.x<widthInTiles)&&(w.y>=0)&&(w.y<heightInTiles)){
-                            addPaleteToTile(w.x, w.y, p, keyUpEvent.shiftKey)
-                        } else {
-                            let t = whichTile(keyUpEvent);
-                            if(t!=null){
-                                addTileToPalete(t.id, p, event.shiftKey);
-                            }
-                        }
-                    default:
-                        break;
-                }
-            }, false);            
         </script>
     </head>
 
@@ -123,7 +53,7 @@
                     <div class="tab-content" id="myTabContent">
                         <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab" style="height: 800px; overflow:scroll">
                             <div class="form-group">
-                                <button class="btn btn-primary" onclick="sX=null;sY=null;render()">Update Display</button>
+                                <button class="btn btn-primary" onclick="tempData.sX=null;tempData.sY=null;render()">Update Display</button>
                             </div>
                             <div class="form-group">
                                 <input type="checkbox" id="showXY" onchange="render()" />

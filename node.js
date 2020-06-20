@@ -11,6 +11,9 @@ http.createServer(function (req, res) {
       res.end("Can't find that file....");
       return;
     }
+    if (req.url.endsWith('.png')) {
+      res.setHeader('Expires', 'January 1, 2021');
+    }
     res.writeHead(200);
     res.end(data);
   });
