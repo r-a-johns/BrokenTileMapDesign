@@ -4,8 +4,6 @@
     <script>
         var b = [
             {Name: "Acid", short: "AC", imageId: "BAC"}, 
-    ]
-    var b_other = [
             {Name: "Black", short: "BL", imageId: "BBL"}, 
             {Name: "Cobbles", short: "CB", imageId: "BCB"}, 
             {Name: "Grass", short: "GR", imageId: "BGR"}, 
@@ -50,7 +48,7 @@
                 }
             }
             document.getElementById("output").value = JSON.stringify(json, null, ' ');
-            //outputAllImages(images);
+            outputAllImages(images);
         }
 
         function generateConfig(name, linePrefix, tilePrefix, size){
