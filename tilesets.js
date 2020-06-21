@@ -9023,6 +9023,80 @@ var tilesetData = [
     },
     ////////////////////////////////////////////////////////////////////////////////
 	{
+		set: "solidbackground",
+		icon: "solid/BAC.png",
+		title: "Solid Backgrounds",
+        tiles:[
+            {
+				"id":	"BAC",
+				"src":	"solid/BAC.png",
+				"subset":	"solidbackground",
+				"br":	false
+			},
+            {
+				"id":	"BBL",
+				"src":	"solid/BBL.png",
+				"subset":	"solidbackground",
+				"br":	false
+			},
+            {
+				"id":	"BCB",
+				"src":	"solid/BCB.png",
+				"subset":	"solidbackground",
+				"br":	false
+			},
+            {
+				"id":	"BGR",
+				"src":	"solid/BGR.png",
+				"subset":	"solidbackground",
+				"br":	false
+			},
+            {
+				"id":	"BLA",
+				"src":	"solid/BLA.png",
+				"subset":	"solidbackground",
+				"br":	false
+			},
+            {
+				"id":	"BLG",
+				"src":	"solid/BLG.png",
+				"subset":	"solidbackground",
+				"br":	false
+			},
+            {
+				"id":	"BSA",
+				"src":	"solid/BSA.png",
+				"subset":	"solidbackground",
+				"br":	false
+			},
+            {
+				"id":	"BTL",
+				"src":	"solid/BTL.png",
+				"subset":	"solidbackground",
+				"br":	false
+			},
+            {
+				"id":	"BWA",
+				"src":	"solid/BWA.png",
+				"subset":	"solidbackground",
+				"br":	false
+			},
+            {
+				"id":	"BWD",
+				"src":	"solid/BWD.png",
+				"subset":	"solidbackground",
+				"br":	false
+			},
+            {
+				"id":	"BWL",
+				"src":	"solid/BWL.png",
+				"subset":	"solidbackground",
+				"br":	false
+			},
+        ]
+    },
+
+	{
 		set: "AC-E-01",
 		icon: "new/AC-E-01-1-A.png",
 		title: "Acid - End 1",
