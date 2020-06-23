@@ -382,6 +382,70 @@ var tilesetData = [
                 src: 'hole/hole8-1.png',
                 subset: 'hole8',
             },
+            {
+                id: 'pit1-1',
+                src: 'pit/pit1-1.png',
+                subset: 'pit1'
+            },
+            {
+                id: 'pit1-2',
+                src: 'pit/pit1-2.png',
+                subset: 'pit1',
+                br: true
+            },
+            {
+                id: 'pit1-4',
+                src: 'pit/pit1-4.png',
+                subset: 'pit1'
+            },
+            {
+                id: 'pit1-3',
+                src: 'pit/pit1-3.png',
+                subset: 'pit1'
+            },
+
+            {
+                id: 'pit2-1',
+                src: 'pit/pit2-1.png',
+                subset: 'pit2'
+            },
+            {
+                id: 'pit2-4',
+                src: 'pit/pit2-4.png',
+                subset: 'pit2',
+                br: true
+            },
+            {
+                id: 'pit2-3',
+                src: 'pit/pit2-3.png',
+                subset: 'pit2'
+            },
+            {
+                id: 'pit2-2',
+                src: 'pit/pit2-2.png',
+                subset: 'pit2'
+            },
+
+            {
+                id: 'pit3-3',
+                src: 'pit/pit3-3.png',
+                subset: 'pit3'
+            },
+            {
+                id: 'pit3-1',
+                src: 'pit/pit3-1.png',
+                subset: 'pit3'
+            },
+            {
+                id: 'pit3-4',
+                src: 'pit/pit3-4.png',
+                subset: 'pit3'
+            },
+            {
+                id: 'pit3-2',
+                src: 'pit/pit3-2.png',
+                subset: 'pit3'
+            },                        
         ]
     },
     {
@@ -472,82 +536,6 @@ var tilesetData = [
                 id: 'pathincline16-1',
                 src: 'pathincline/pathincline16-1.png',
                 subset: 'pathincline13',
-            },
-        ]
-    },
-    {
-        set: "pit",
-        icon: 'pit/pit0-1.png',
-        title: "Pit",
-        tiles: [{
-                id: 'pit0-1',
-                src: 'pit/pit0-1.png',
-                subset: 'pit0'
-            },
-
-            {
-                id: 'pit1-1',
-                src: 'pit/pit1-1.png',
-                subset: 'pit1'
-            },
-            {
-                id: 'pit1-2',
-                src: 'pit/pit1-2.png',
-                subset: 'pit1',
-                br: true
-            },
-            {
-                id: 'pit1-4',
-                src: 'pit/pit1-4.png',
-                subset: 'pit1'
-            },
-            {
-                id: 'pit1-3',
-                src: 'pit/pit1-3.png',
-                subset: 'pit1'
-            },
-
-            {
-                id: 'pit2-1',
-                src: 'pit/pit2-1.png',
-                subset: 'pit2'
-            },
-            {
-                id: 'pit2-4',
-                src: 'pit/pit2-4.png',
-                subset: 'pit2',
-                br: true
-            },
-            {
-                id: 'pit2-3',
-                src: 'pit/pit2-3.png',
-                subset: 'pit2'
-            },
-            {
-                id: 'pit2-2',
-                src: 'pit/pit2-2.png',
-                subset: 'pit2'
-            },
-
-            {
-                id: 'pit3-3',
-                src: 'pit/pit3-3.png',
-                subset: 'pit3'
-            },
-            {
-                id: 'pit3-1',
-                src: 'pit/pit3-1.png',
-                subset: 'pit3'
-            },
-            {
-                id: 'pit3-4',
-                src: 'pit/pit3-4.png',
-                subset: 'pit3'
-            },
-            {
-                id: 'pit3-2',
-                src: 'pit/pit3-2.png',
-                subset: 'pit3'
             },
         ]
     },

@@ -24,9 +24,9 @@ function getEmptySaveData(){
 
 function emptyMapArray() {
     let mapArray = [];
-    for (var mapArrayX = 0; mapArrayX < 50; mapArrayX++) {
+    for (var mapArrayX = 0; mapArrayX < 100; mapArrayX++) {
         mapArray[mapArrayX] = []
-        for (var mayArrayY = 0; mayArrayY < 50; mayArrayY++) {
+        for (var mayArrayY = 0; mayArrayY < 100; mayArrayY++) {
             mapArray[mapArrayX][mayArrayY] = {
                 x: mapArrayX,
                 y: mayArrayY,

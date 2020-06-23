@@ -47,7 +47,7 @@
                     case "Digit9":
                     case "Numpad9":
                         let p = keyUpEvent.code[keyUpEvent.code.length-1];
-                        if((w.x>=0)&&(w.x<widthInTiles)&&(w.y>=0)&&(w.y<heightInTiles)){
+                        if((w.x>=0)&&(w.x<saveData.widthInTiles)&&(w.y>=0)&&(w.y<saveData.heightInTiles)){
                             addPaleteToTile(w.x, w.y, p, keyUpEvent.shiftKey)
                         } else {
                             let t = whichTile(keyUpEvent);
