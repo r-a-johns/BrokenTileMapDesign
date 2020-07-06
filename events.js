@@ -55,7 +55,22 @@
                                 addTileToPalete(t.id, p, event.shiftKey);
                             }
                         }
+                        break;
+                    case  "KeyH":
+                        let t = whichTile(keyUpEvent);
+                        if(t!=null){
+                            
+                            t.parentElement.style.display = "none";
+                            //addTileToPalete(t.id, p, event.shiftKey);
+                        }
+                        let ts = whichTileSet(keyUpEvent);
+                        if(ts!=null){
+                            ts.parentElement.parentElement.style.display = "none";
+                        }
+                        //keyUpEvent.srcElement.style.display = "none"
+                        break;
                     default:
                         break;
                 }
-            }, false);      7
+
+            }, false);

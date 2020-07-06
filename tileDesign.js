@@ -342,3 +342,66 @@ function whichTile(event){
         }       
     }
 }
+
+function whichTileSet(event){
+    let displayedImg = $("#myTab li img");
+    for(let i=0;i<displayedImg.length;i++){
+        let elem = displayedImg[i];
+        eTop = window.scrollY + elem.getBoundingClientRect().top // Y
+        eLeft = window.scrollX + elem.getBoundingClientRect().left
+        if((event.pageX>=eLeft)&&(event.pageX<(elem.width + eLeft))){
+            if((event.pageY>=eTop)&&(event.pageY<(elem.height + eTop))){
+                return elem;
+            }
+        }       
+    }
+}
+
+function getDefaultTileSet() {
+    let defaultTileSet = [];
+    for (let tsdI = 0; tsdI < tilesetData.length; tsdI++) {
+        ts = tilesetData[tsdI];
+        let htmlBlock1 = "";
+        let htmlBlock2 = "";
+        htmlBlock1 += '<li class="nav-item">'
+        htmlBlock1 += '  <a class="nav-link" id="' + ts.set + '-tab" data-toggle="tab" href="#' + ts.set + '" role="tab" aria-controls="' + ts.set + '" aria-selected="true">';
+        htmlBlock1 += '    <img src="tilesets/' + ts.icon + '" height="20" width="20" title="' + ts.title + '" />'
+        htmlBlock1 += '  </a>';
+        htmlBlock1 += '</li>';
+        htmlBlock2 += '<div class="tab-pane fade" id="' + ts.set + '" role="tabpanel" aria-labelledby="' + ts.set + '-tab" style="height: 800px; overflow:scroll">';
+        htmlBlock2 += '  <div id="tileSet-' + ts.set + '-div" class="card">';
+        htmlBlock2 += '    <ul id="tileSet-' + ts.set + '-ul" class="list-group list-group-flush"></ul>';
+        htmlBlock2 += '  </div>';
+        htmlBlock2 += '</div>';
+        document.getElementById("myTab").innerHTML += htmlBlock1;
+        document.getElementById("myTabContent").innerHTML += htmlBlock2;
+        let tileSetUl = document.getElementById("tileSet-" + ts.set + "-ul")
+        if (tileSetUl != null) {
+            let tileSubSet = [];
+            tileSetUl.innerHTML = "";
+            for (let tileSetI = 0; tileSetI < ts.tiles.length; tileSetI++) {
+                let tile = ts.tiles[tileSetI];
+                if (tileSubSet[tile.subset] == null) {
+                    tileSubSet[tile.subset] = document.createElement("li")
+                    tileSubSet[tile.subset].setAttribute("class", "list-group-item")
+                    tileSetUl.appendChild(tileSubSet[tile.subset]);
+                }
+                let img = document.createElement("img");
+                img.setAttribute("src", "tilesets/" + tile.src);
+                img.setAttribute("id", tile.id);
+                img.setAttribute("tilesetId", tile.id);
+                img.setAttribute("width", 40);
+                img.setAttribute("height", 40);
+                img.setAttribute("onclick", "tilePicked('" + tile.id + "', event)");
+                img.setAttribute("style", "padding: 2px; border: solid 1px black");
+                tileSubSet[tile.subset].appendChild(img);
+                if (tile.br == true) {
+                    tileSubSet[tile.subset].appendChild(document.createElement("br"));
+                }
+                defaultTileSet[tile.id] = img;
+            }
+        }
+    }
+    return defaultTileSet;
+}
+
